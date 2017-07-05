@@ -1,133 +1,178 @@
+/*-------------
+  初期処理
+-------------*/
 function init() {
-    var sinsu;
-    var num = parseInt(document.getElementById("input").value);
+
+    var befNum = parseInt(document.getElementById("input").value); //変換前
     
-    //���W�I�{�^���`�F�b�N
-    //10��16�̂Ƃ�
+    //入力値チェック
+    inputCheck(befNum);
+    
+    var radix; //何進数
+    var aftNum; //変換後
+    
+    //チェック処理
+    inputCheck(befNum);
+    
+    //ラジオボタン取得
+    //10→16
     if(document.form1.radio1.checked){
-        sinsu = 16;
-    //10��8�̂Ƃ�
+        radix = 16;
+    //10→8
     }else if(document.form1.radio2.checked){
-        sinsu = 8;
-    //10��2�̂Ƃ�
+        radix = 8;
+    //10→2
     }else if(document.form1.radio3.checked){
-        sinsu = 2;
-    //���̑��i���̂Ƃ�
+        radix = 2;
+    //10→n
     }else if(document.form1.radio4.checked){
-        sinsu = parseInt(document.form2.change.value);
+        radix = parseInt(document.form2.change.value);
     }
-    changeNum = change16(num,sinsu);
-    document.getElementById("output").value = changeNum;
+    
+    //基数変換処理実行
+    aftNum = radixConv(befNum,radix);
+    //変換後テキストボックスに反映
+    document.getElementById("output").value = aftNum;
 }
 
-function changeAlfa(val){
-    var alfa;
+/*-------------------------------
+  10以上の数字→アルファベット
+  引数：10以上の数字
+  返り値:変換後のアルファベット
+-------------------------------*/
+function changeStr(val){
+    var aftStr;
             switch(val){
                 case 10:
-                    alfa = "A";
+                    aftStr = "A";
                     break;
                 case 11:
-                    alfa = "B";
+                    aftStr = "B";
                     break;
                 case 12:
-                    alfa = "C";
+                    aftStr = "C";
                     break;
                 case 13:
-                    alfa = "D";
+                    aftStr = "D";
                     break;
                 case 14:
-                    alfa = "E";
+                    aftStr = "E";
                     break;
                 case 15:
-                    alfa = "F";
+                    aftStr = "F";
                     break;
                 case 16:
-                    alfa = "G";
+                    aftStr = "G";
                     break;
                 case 17:
-                    alfa = "H";
+                    aftStr = "H";
                     break;
                 case 18:
-                    alfa = "I";
+                    aftStr = "I";
                     break;
                 case 19:
-                    alfa = "J";
+                    aftStr = "J";
                     break;
                 case 20:
-                    alfa = "K";
+                    aftStr = "K";
                     break;
                 case 21:
-                    alfa = "L";
+                    aftStr = "L";
                     break;
                 case 22:
-                    alfa = "M";
+                    aftStr = "M";
                     break;
                 case 23:
-                    alfa = "N";
+                    aftStr = "N";
                     break;
                 case 24:
-                    alfa = "O";
+                    aftStr = "O";
                     break;
                 case 25:
-                    alfa = "P";
+                    aftStr = "P";
                     break;
                 case 26:
-                    alfa = "Q";
+                    aftStr = "Q";
                     break;
                 case 27:
-                    alfa = "R";
+                    aftStr = "R";
                     break;
                 case 28:
-                    alfa = "S";
+                    aftStr = "S";
                     break;
                 case 29:
-                    alfa = "T";
+                    aftStr = "T";
                     break;
                 case 30:
-                    alfa = "U";
+                    aftStr = "U";
                     break;
                 case 31:
-                    alfa = "V";
+                    aftStr = "V";
                     break;
                 case 32:
-                    alfa = "W";
+                    aftStr = "W";
                     break;
                 case 33:
-                    alfa = "X";
+                    aftStr = "X";
                     break;
                 case 34:
-                    alfa = "Y";
+                    aftStr = "Y";
                     break;
                 case 35:
-                    alfa = "Z";
+                    aftStr = "Z";
                     break;
                 default:
-                    alfa = "";
+                    aftStr = "";
                     break;
             }
-    return alfa;
+    return aftStr;
 
 }
 
-function change16(val,div){
-    var divNum = new Array();
-    var modNum = new Array();
-    var res = "";
-    var i = 0;
-    var tmpMod;
+/*--------------------------
+  基数変換処理
+  引数：変換前数字、何進数
+  返り値：基数変換後
+--------------------------*/
+function radixConv(val,div){
+    var divNum = new Array(); //変換前÷何進数格納
+    var modNum = new Array(); //変換前÷何進数のあまり格納
+    var res = ""; //基数変換後文字列格納
+    var i = 0;    //カウンター
+    var tmpMod;   //あまり保管用
+    
+    //変換前の数字を何進数の値で割っていき0になるまで
     while(val> 0){
         divNum[i] = Math.floor(val/div);
         tmpMod = val%div;
+        //あまりが10以上ならアルファベットに変換
         if(tmpMod > 9){
-            modNum[i] = changeAlfa(tmpMod);
+            modNum[i] = changeStr(tmpMod);
         }else{
             modNum[i] = tmpMod;
         }
         val = divNum[i];
-        res = modNum[i] + res;
-        i = i+1;
+        res = modNum[i] + res; //変換後文字列生成
+        i = i + 1;
     }
     return res;
 }
 
+/*--------------------------
+  入力値チェック
+  引数：変換前数字
+  返り値：基数変換後
+--------------------------*/
+function inputCheck(checkNum){
 
+    //数字以外が入っていれば、処理抜ける
+    if(isNaN(checkNum)){
+        alert("数値のみ指定できます。");
+        //変換前入力欄にフォーカスあてる
+        document.getElementById("input").focus();
+        exit;
+    }
+    //特になにもなければ処理続行
+    return;
+    
+}
